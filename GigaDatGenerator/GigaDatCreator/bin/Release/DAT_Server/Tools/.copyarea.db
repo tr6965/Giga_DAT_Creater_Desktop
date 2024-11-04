@@ -1,0 +1,9 @@
+ClearCase CopyAreaDB|4
+vobs\ADC_TOOLS\GigaDatCreator\Solution\GigaDatCreator\bin\Release\DAT_Server\Tools
+2
+5
+e:scncfg2Dal.exe|1|164f5e83f47|11800|fb154d7f|e7615c2e3e1e11e88d3f5cf3fcdcc424|0
+c:checksum.exe|1|164f5e840bb|11000|797ec461|e8f15c3e3e1e11e88d3f5cf3fcdcc424|0
+b:Dat_Gen.exe|1|164f5e849f5|a3400|f061748e|e5615c1e3e1e11e88d3f5cf3fcdcc424|0
+10:DAT-Combiner.exe|1|164f5e83c95|13e00|9c483db6|de015c0e3e1e11e88d3f5cf3fcdcc424|0
+e:scncfg2Dat.exe|1|164f5e83be1|14a00|11336bef|dc415bfe3e1e11e88d3f5cf3fcdcc424|0
