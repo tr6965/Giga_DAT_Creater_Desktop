@@ -20,7 +20,7 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Diagnostics;
-
+using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using static System.Net.Mime.MediaTypeNames;
@@ -196,7 +196,7 @@ namespace GigaDatCreatorDLL
                 }
             }
 
-            copyDatsToOutputFolder();
+            copyDatsToOutputFolder(0);
 
             Directory.SetCurrentDirectory(currentDirectory);
 
@@ -242,7 +242,7 @@ namespace GigaDatCreatorDLL
 
             }
 
-            copyDatsToOutputFolder();
+            copyDatsToOutputFolder(i);
 
             Directory.SetCurrentDirectory(currentDirectory);
 
@@ -459,19 +459,23 @@ namespace GigaDatCreatorDLL
         }
 
         //Copy DATs to Output folder
-        public void copyDatsToOutputFolder()
+        public void copyDatsToOutputFolder(int componentCounConfigCombine)
         {
-            if (!m_isAuxScanner)
-            {
-                outputDirectory = currentDirectory + "\\Output\\";
+            
+           
+            outputDirectory = currentDirectory + "\\Output\\" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm") + "\\";
+            System.IO.Directory.CreateDirectory(outputDirectory);
+           
 
-            }
+            OutputGigaDatDirectory = outputDirectory + scannerModel + "\\GigaDAT\\";
+            System.IO.Directory.CreateDirectory(OutputGigaDatDirectory);
+            string outputConfigDatDirectory = outputDirectory + scannerModel + "\\ConfigurationDAT\\";
+            System.IO.Directory.CreateDirectory(outputConfigDatDirectory);
 
-            OutputGigaDatDirectory = outputDirectory;
+
             string newGigaDatFileName = 'G' + GigaDatFileName.Substring(1);
             outputGigaDatPath = OutputGigaDatDirectory + newGigaDatFileName;
-
-
+            
             if (isCordlessScanner == true)
             {
                 if (checkFileExist(gigaDatPathCombine))
@@ -491,6 +495,29 @@ namespace GigaDatCreatorDLL
                 }
             }
 
+            // copy config dats
+           
+            var datFiles = Directory.GetFiles(tempDirectoryPath, "*.dat").Where(file => Path.GetFileName(file).StartsWith("ScannerConfig") || Path.GetFileName(file) == "CradleConfig.dat");
+
+            foreach (string filePath in datFiles)
+            {
+            
+                string fileName = Path.GetFileName(filePath);
+
+                string destFilePath = Path.Combine(outputConfigDatDirectory, fileName);
+
+                File.Copy(filePath, destFilePath, true); 
+                
+            }
+
+            string ConfigCombineFileName = "CombinedDat" + componentCounConfigCombine + ".dat";
+            string ConfigCombineFilePath = tempDirectoryPath + ConfigCombineFileName;
+            string ConfigCombineFileDestPath = outputConfigDatDirectory + "CombinedScannerConfig.dat";
+
+            if (checkFileExist(ConfigCombineFilePath))
+            {
+                File.Copy(ConfigCombineFilePath, ConfigCombineFileDestPath, true);
+            }
         }
 
         // Check for filess exists
@@ -762,7 +789,7 @@ namespace GigaDatCreatorDLL
                 return false;
             }
             var currentDirectory = System.IO.Directory.GetCurrentDirectory();
-            var outputDirectory = DAT_Generator.outputDirectory; // "CombinedGigaDATs\\";
+            var outputDirectory = DAT_Generator.outputDirectory+ "CombinedGigaDAT\\";
             var primaryDAT_TLRN = DatGenerators[0].gigaDatTLRN;
             string gigaDATCombinedTLRN = "J" + primaryDAT_TLRN.Remove(0, 1);
             string combinedGigaDATOutputFilePath = outputDirectory + gigaDATCombinedTLRN + ".DAT";
